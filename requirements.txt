@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+opencv-python
+ultralytics
+python-multipart
+numpy==1.26.4
