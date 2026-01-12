@@ -5,6 +5,10 @@ import cv2
 from ultralytics import YOLO
 
 app = FastAPI()
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 model = YOLO("yolov8n.pt")
 
@@ -62,3 +66,4 @@ def get_results(video_id: str):
     import json
     with open(f"{RESULTS_DIR}/{video_id}.json") as f:
         return json.load(f)
+
