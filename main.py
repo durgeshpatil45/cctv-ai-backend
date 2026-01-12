@@ -4,10 +4,10 @@ import uuid
 import cv2
 from ultralytics import YOLO
 
-app = FastAPI()
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
 
 
 model = YOLO("yolov8n.pt")
@@ -55,7 +55,22 @@ def analyze_video(video_id: str):
     cap.release()
 
     import json
-    with open(f"{RESULTS_DIR}/{video_id}.json", "w") as f:
+    from fastapi import HTTPException
+import os, json
+
+@app.get("/results/{video_id}")
+def get_results(video_id: str):
+    path = f"{RESULTS_DIR}/{video_id}.json"
+
+    if not os.path.exists(path):
+        raise HTTPException(
+            status_code=202,
+            detail="Analysis still running or results not ready"
+        )
+
+    with open(path, "r") as f:
+        return json.load(f)
+
         json.dump(results, f)
 
     return {"status": "completed"}
@@ -66,4 +81,5 @@ def get_results(video_id: str):
     import json
     with open(f"{RESULTS_DIR}/{video_id}.json") as f:
         return json.load(f)
+
 
